@@ -137,6 +137,8 @@ const bookReducer = (state = initialState, action: ICalendarEventsActions) => {
       };
     case FETCH_CALENDAR_EVENTS_FAILURE:
       return { ...state, loading: false, error: action.error };
+    case SET_SEARCH_TEXT:
+      return { ...state, searchText: action.searchText };
     default:
       return state;
   }

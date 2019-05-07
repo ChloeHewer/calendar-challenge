@@ -5,14 +5,12 @@ import { fetchCalendar, ICalendarEvents } from "../../reducers/calendarReducer";
 import { connect } from "react-redux";
 import styles from "./calendar.module.scss";
 import SearchBar from "../../components/searchBar/searchbar";
-import { setSearchText } from "../../reducers/filteredReducer";
 
 export interface IOwnProps {}
 
 export interface IStateProps {
   fetchCalendar: () => void;
   calendarEvents: ICalendarEvents[];
-  setSearchText: (searchText: string) => void;
   searchText: string;
 }
 
@@ -21,17 +19,31 @@ export interface IState {
 }
 
 class Calendar extends React.Component<IOwnProps & IStateProps, IState> {
-  public state = { filteredCalendarEvents: this.props.calendarEvents };
-
-  public componentDidUpdate(prevProps: IStateProps & IOwnProps) {
-    if (prevProps !== this.props) {
-      this.setState({ filteredCalendarEvents: this.props.calendarEvents });
-    }
-  }
+  public state = { filteredCalendarEvents: [] };
 
   public componentDidMount() {
     this.props.fetchCalendar();
   }
+
+  public componentDidUpdate(prevProps: IOwnProps & IStateProps) {
+    if (this.props !== prevProps) {
+      this.setState({
+        filteredCalendarEvents: this.props.calendarEvents.filter(
+          this.filterEvents
+        )
+      });
+    }
+  }
+
+  public filterEvents = (event: ICalendarEvents) => {
+    const ar = Object.values(event).filter(str => {
+      if (typeof str === "string") {
+        return str.toLowerCase().includes(this.props.searchText.toLowerCase());
+      }
+      return false;
+    });
+    return ar.length > 0 ? true : false;
+  };
 
   public render() {
     return (
@@ -48,12 +60,7 @@ class Calendar extends React.Component<IOwnProps & IStateProps, IState> {
               <option value="2019-05-23">2019/05/23</option>
             </select>
           </div>
-          {/* <SearchBar calendarEvents={this.state.filteredCalendarEvents} /> */}
-          <input
-            onChange={this.handleSearchBoxChange}
-            type="text"
-            placeholder="search..."
-          />
+          <SearchBar />
         </section>
 
         <section className={styles.calendarSection}>
@@ -77,15 +84,6 @@ class Calendar extends React.Component<IOwnProps & IStateProps, IState> {
     });
     this.setState({ filteredCalendarEvents: filteredList });
   };
-
-  private handleSearchBoxChange = (
-    event: React.FormEvent<HTMLInputElement>
-  ) => {
-    const search = this.state.filteredCalendarEvents.filter(calendarEvent => {
-      return calendarEvent.summary.includes(event.currentTarget.value);
-    });
-    this.setState({ filteredCalendarEvents: search });
-  };
 }
 
 const mapStateToProps = (state: IStore, props: IOwnProps) => {
@@ -95,7 +93,7 @@ const mapStateToProps = (state: IStore, props: IOwnProps) => {
   };
 };
 
-const mapDispatchToProps = { fetchCalendar, setSearchText };
+const mapDispatchToProps = { fetchCalendar };
 
 export default connect(
   mapStateToProps,

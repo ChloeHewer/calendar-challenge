@@ -8,14 +8,12 @@ export interface IOwnProps {}
 
 export interface IStateProps {
   setSearchText: (searchText: string) => void;
+  searchText: string;
 }
 
-export interface IState {
-  filteredCalendarEvents: ICalendarEvents[];
-}
+export interface IState {}
 
 class SearchBar extends React.Component<IOwnProps & IStateProps, IState> {
-  // public state = { filteredCalendarEvents: this.props.calendarEvents };
   public render() {
     return (
       <input
@@ -30,11 +28,15 @@ class SearchBar extends React.Component<IOwnProps & IStateProps, IState> {
     event: React.FormEvent<HTMLInputElement>
   ) => {
     this.props.setSearchText(event.currentTarget.value);
+    // console.log(event.currentTarget.value);
+    console.log(this.props.searchText);
   };
 }
 
 const mapStateToProps = (state: IStore, props: IOwnProps) => {
-  return {};
+  return {
+    searchText: state.calendar.searchText
+  };
 };
 
 const mapDispatchToProps = { setSearchText };
