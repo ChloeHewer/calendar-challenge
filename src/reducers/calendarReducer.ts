@@ -1,7 +1,38 @@
 import { ThunkAction } from "redux-thunk";
 
 // ICalendarEvents interface
-export interface ICalendarEvents {}
+export interface ICalendarEvents {
+  kind: string;
+  etag: string;
+  id: string;
+  status: string;
+  htmlLink: string;
+  created: string;
+  updated: string;
+  summary: string;
+  creator: {
+    email: string;
+  };
+  organizer: {
+    email: string;
+    displayName: string;
+    self: boolean;
+  };
+  start: {
+    date: string;
+  };
+  end: {
+    date: string;
+  };
+  transparency: string;
+  iCalUID: string;
+  sequence: number;
+  extendedProperties: {
+    private: {
+      everyoneDeclinedDismissed: string;
+    };
+  };
+}
 
 // action types
 export const FETCH_CALENDAR_EVENTS = "FETCH_CALENDAR_EVENTS";
