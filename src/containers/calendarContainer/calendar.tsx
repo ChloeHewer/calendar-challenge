@@ -34,10 +34,7 @@ class Calendar extends React.Component<IOwnProps & IStateProps, IState> {
       <React.Fragment>
         <section className={styles.filterSection}>
           <div>
-            <label onChange={this.handleSearchBoxChange}>
-              {" "}
-              Filter By Date{" "}
-            </label>
+            <label> Filter By Date </label>
             <select className={styles.select} onChange={this.handleChange}>
               <option value="all">Show All</option>
               <option value="2019-05-06">2019/05/06</option>
@@ -47,7 +44,11 @@ class Calendar extends React.Component<IOwnProps & IStateProps, IState> {
               <option value="2019-05-23">2019/05/23</option>
             </select>
           </div>
-          <input type="text" placeholder="search..." />
+          <input
+            onChange={this.handleSearchBoxChange}
+            type="text"
+            placeholder="search..."
+          />
         </section>
 
         <section className={styles.calendarSection}>
@@ -73,13 +74,17 @@ class Calendar extends React.Component<IOwnProps & IStateProps, IState> {
   };
 
   private handleSearchBoxChange = (
-    event: React.FormEvent<HTMLLabelElement>
+    event: React.FormEvent<HTMLInputElement>
   ) => {
-    const search = this.state.filteredCalendarEvents.map(calendarEvent => {
-      return calendarEvent.summary.includes(event.type);
+    const search = this.state.filteredCalendarEvents.filter(calendarEvent => {
+      return calendarEvent.summary.includes(event.currentTarget.value);
     });
-    console.log(search);
-    // this.setState({ filteredCalendarEvents: search });
+    this.setState({ filteredCalendarEvents: search });
+    if (event.currentTarget.value === " ") {
+      this.setState({
+        filteredCalendarEvents: this.state.filteredCalendarEvents
+      });
+    }
   };
 }
 
