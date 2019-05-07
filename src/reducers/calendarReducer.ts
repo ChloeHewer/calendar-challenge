@@ -38,6 +38,8 @@ export interface ICalendarEvents {
 export const FETCH_CALENDAR_EVENTS = "FETCH_CALENDAR_EVENTS";
 export const FETCH_CALENDAR_EVENTS_SUCCESS = "FETCH_CALENDAR_EVENTS_SUCCESS";
 export const FETCH_CALENDAR_EVENTS_FAILURE = "FETCH_CALENDAR_EVENTS_FAILURE";
+export const SET_CALENDAR_EVENTS = "SET_CALENDAR_EVENTS";
+export const SET_SEARCH_TEXT = "SET_SEARCH_TEXT";
 
 // action creators
 export const getCalendarEvents = (): IGetCalendarEventsAction => ({
@@ -54,6 +56,10 @@ export const getCalendarEventsFailure = (
 ): IGetCalendarEventsFailureAction => ({
   type: FETCH_CALENDAR_EVENTS_FAILURE,
   error
+});
+export const setSearchText = (searchText: string): ISetSearchTextAction => ({
+  type: SET_SEARCH_TEXT,
+  searchText
 });
 
 type ThunkResult<R> = ThunkAction<
@@ -90,25 +96,32 @@ export interface IGetCalendarEventsFailureAction {
   type: typeof FETCH_CALENDAR_EVENTS_FAILURE;
   error: Error;
 }
+export interface ISetSearchTextAction {
+  type: typeof SET_SEARCH_TEXT;
+  searchText: string;
+}
 
 // combining action creators
 
 type ICalendarEventsActions =
   | IGetCalendarEventsAction
   | IGetCalendarEventsSuccessAction
-  | IGetCalendarEventsFailureAction;
+  | IGetCalendarEventsFailureAction
+  | ISetSearchTextAction;
 
 export interface ICalendarState {
   calendarEvents: ICalendarEvents[];
   error: null | Error;
   loading: boolean;
+  searchText: string;
 }
 
 // reducer with initial state
 const initialState: ICalendarState = {
   calendarEvents: [],
   error: null,
-  loading: false
+  loading: false,
+  searchText: ""
 };
 
 const bookReducer = (state = initialState, action: ICalendarEventsActions) => {

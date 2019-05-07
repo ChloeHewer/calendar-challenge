@@ -4,12 +4,16 @@ import { IStore } from "../../reducers";
 import { fetchCalendar, ICalendarEvents } from "../../reducers/calendarReducer";
 import { connect } from "react-redux";
 import styles from "./calendar.module.scss";
+import SearchBar from "../../components/searchBar/searchbar";
+import { setSearchText } from "../../reducers/filteredReducer";
 
 export interface IOwnProps {}
 
 export interface IStateProps {
   fetchCalendar: () => void;
   calendarEvents: ICalendarEvents[];
+  setSearchText: (searchText: string) => void;
+  searchText: string;
 }
 
 export interface IState {
@@ -44,6 +48,7 @@ class Calendar extends React.Component<IOwnProps & IStateProps, IState> {
               <option value="2019-05-23">2019/05/23</option>
             </select>
           </div>
+          {/* <SearchBar calendarEvents={this.state.filteredCalendarEvents} /> */}
           <input
             onChange={this.handleSearchBoxChange}
             type="text"
@@ -80,21 +85,17 @@ class Calendar extends React.Component<IOwnProps & IStateProps, IState> {
       return calendarEvent.summary.includes(event.currentTarget.value);
     });
     this.setState({ filteredCalendarEvents: search });
-    if (event.currentTarget.value === " ") {
-      this.setState({
-        filteredCalendarEvents: this.state.filteredCalendarEvents
-      });
-    }
   };
 }
 
 const mapStateToProps = (state: IStore, props: IOwnProps) => {
   return {
-    calendarEvents: state.calendar.calendarEvents
+    calendarEvents: state.calendar.calendarEvents,
+    searchText: state.calendar.searchText
   };
 };
 
-const mapDispatchToProps = { fetchCalendar };
+const mapDispatchToProps = { fetchCalendar, setSearchText };
 
 export default connect(
   mapStateToProps,
